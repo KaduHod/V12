@@ -1,3 +1,55 @@
-<nav>
-  <a href="/">Home</a>
+<nav class="bg-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <a href="/" class="text-white font-bold flex-shrink-0">Gerenciador pessoal</a>
+
+      <%# Botão hamburguer - só aparece no mobile %>
+      <button
+        id="menu-toggle"
+        class="md:hidden text-gray-300 hover:text-white p-2"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+      >
+        <svg id="icon-open"  class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <%# Links - desktop: inline | mobile: oculto até abrir %>
+      <div id="menu" class="hidden md:flex md:items-center md:space-x-4">
+        <a href="/" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
+        <% if (entidades) { %>
+          <% Object.values(entidades).forEach(entidade => { %>
+              <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.nome %>" class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"><%= entidade.nome %></a>
+          <% }) %>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
+
+  <%# Menu mobile expandido (abaixo da barra) %>
+  <div id="menu-mobile" class="hidden md:hidden border-t border-gray-700 px-4 pb-3 space-y-1">
+    <a href="/" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
+    <% if (entidades) { %>
+      <% Object.values(entidades).forEach(entidade => { %>
+          <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.nome %>" class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"><%= entidade.nome %></a>
+      <% }) %>
+    <% } %>
+  </div>
 </nav>
+
+<script>
+  const toggle   = document.getElementById('menu-toggle');
+  const menuMob  = document.getElementById('menu-mobile');
+  const iconOpen  = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+
+  toggle.addEventListener('click', () => {
+    const aberto = !menuMob.classList.contains('hidden');
+    menuMob.classList.toggle('hidden', aberto);
+    iconOpen.classList.toggle('hidden', !aberto);
+    iconClose.classList.toggle('hidden', aberto);
+    toggle.setAttribute('aria-expanded', String(!aberto));
+  });
+</script>

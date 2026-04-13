@@ -16,7 +16,38 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.get('/', (req, res) => {
-    res.render("pages/home", {titulo:"teste", nome: "carlos"})
+    res.render('pages/home', {
+        titulo: "Home",
+        entidades: EntidadesGym
+    });
+})
+app.get('/treino', (req, res) => {
+    const entidade = EntidadesGym.treino;
+
+    // Dados de exemplo para a lista (pode ser array vazio inicialmente)
+    const itens = [
+        {
+            treino: 1,
+            exercicio: 101,
+            series: 3,
+            "repetições": 10,
+            descanso: 60
+        },
+        {
+            treino: 2,
+            exercicio: 102,
+            series: 4,
+            "repetições": 12,
+            descanso: 45
+        }
+    ];
+
+    res.render('pages/treinos', {
+        entidade,
+        itens,
+        titulo: "Treinos",
+        entidades: EntidadesGym
+    });
 })
 
 try {

@@ -1,6 +1,7 @@
 // @ts-check
 /**
  * @typedef {"string" | "number" | "boolean"} TipoColuna
+ * @typedef {"unico" | "lista" } TipoEntidade
  * @typedef {"treino" | "exercise" } TiposEntidadesGym
  */
 /**
@@ -15,6 +16,7 @@
  * @typedef {Object} Entidade
  * @property {string} nome
  * @property {string} tabela
+ * @property {TipoEntidade} tipo
  * @property {Coluna[]} colunas
  */
 
@@ -22,6 +24,7 @@
 const treino = {
     nome: "treino",
     tabela: "treino_exercise",
+    tipo: "unico",
     colunas: [
         {
             nome: "treino",
