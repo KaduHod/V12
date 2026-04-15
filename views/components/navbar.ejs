@@ -1,50 +1,56 @@
-<nav class="bg-gray-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
+<%# ── MOBILE: barra superior com hamburger ── %>
+<header class="md:hidden bg-gray-800 flex items-center justify-between px-4 h-14 fixed top-0 left-0 right-0 z-50">
+  <a href="/" class="text-white font-bold text-sm">Gerenciador pessoal</a>
+  <button
+    id="menu-toggle"
+    class="text-gray-300 hover:text-white p-2"
+    aria-label="Abrir menu"
+    aria-expanded="false"
+  >
+    <svg id="icon-open"  class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+</header>
 
-      <a href="/" class="text-white font-bold flex-shrink-0">Gerenciador pessoal</a>
+<%# ── MOBILE: dropdown menu ── %>
+<div id="menu-mobile" class="md:hidden hidden fixed top-14 left-0 right-0 z-40 bg-gray-800 border-t border-gray-700 px-4 py-3 space-y-1">
+  <a href="/" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
+  <% if (entidades) { %>
+    <% Object.values(entidades).forEach(entidade => { %>
+      <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+         class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
+        <%= entidade.nome %>
+      </a>
+    <% }) %>
+  <% } %>
+</div>
 
-      <%# Botão hamburguer - só aparece no mobile %>
-      <button
-        id="menu-toggle"
-        class="md:hidden text-gray-300 hover:text-white p-2"
-        aria-label="Abrir menu"
-        aria-expanded="false"
-      >
-        <svg id="icon-open"  class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
-
-      <%# Links - desktop: inline | mobile: oculto até abrir %>
-      <div id="menu" class="hidden md:flex md:items-center md:space-x-4">
-        <a href="/" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
-        <% if (entidades) { %>
-          <% Object.values(entidades).forEach(entidade => { %>
-              <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>" class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"><%= entidade.nome %></a>
-          <% }) %>
-        <% } %>
-      </div>
-
-    </div>
+<%# ── DESKTOP: sidebar lateral ── %>
+<aside class="hidden md:flex flex-col w-56 min-h-screen bg-gray-800 flex-shrink-0">
+  <div class="px-4 py-5 border-b border-gray-700">
+    <a href="/" class="text-white font-bold text-sm">Gerenciador pessoal</a>
   </div>
-
-  <%# Menu mobile expandido (abaixo da barra) %>
-  <div id="menu-mobile" class="hidden md:hidden border-t border-gray-700 px-4 pb-3 space-y-1">
+  <nav class="flex-1 px-2 py-4 space-y-1">
     <a href="/" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
     <% if (entidades) { %>
       <% Object.values(entidades).forEach(entidade => { %>
-          <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>" class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"><%= entidade.nome %></a>
+        <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+           class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
+          <%= entidade.nome %>
+        </a>
       <% }) %>
     <% } %>
-  </div>
-</nav>
+  </nav>
+</aside>
+
+<%# ── Espaço no mobile para não ficar atrás do header fixo ── %>
+<div class="md:hidden h-14"></div>
 
 <script>
   const toggle   = document.getElementById('menu-toggle');
   const menuMob  = document.getElementById('menu-mobile');
   const iconOpen  = document.getElementById('icon-open');
   const iconClose = document.getElementById('icon-close');
-
   toggle.addEventListener('click', () => {
     const aberto = !menuMob.classList.contains('hidden');
     menuMob.classList.toggle('hidden', aberto);
