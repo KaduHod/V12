@@ -26,7 +26,7 @@
 /** @type {Entidade} */
 const exercicio_treino = {
     nome: "Exercicio Treino",
-    http_path_name: "treino",
+    http_path_name: "treino/exercicio",
     tabela: "treino_exercise",
     tipo: "lista",
     colunas: [
@@ -61,6 +61,26 @@ const exercicio_treino = {
 }
 
 /** @type {Entidade} */
+const treino = {
+    nome: "Treino",
+    tabela: "treino",
+    http_path_name: "treino",
+    tipo: "lista",
+    colunas: [
+        {
+            nome:"id",
+            label:"ID",
+            tipo:"number",
+            pk: true
+        },
+        {
+            nome:"nome",
+            label:"Nome",
+            tipo:"string",
+        },
+    ]
+}
+/** @type {Entidade} */
 const pessoa = {
     nome: "Pessoa",
     tabela: "pessoa",
@@ -69,6 +89,7 @@ const pessoa = {
     colunas: [
         {
             nome:"nome",
+            label:"Nome",
             tipo:"string",
         }
     ]
@@ -78,5 +99,5 @@ const pessoa = {
     @type {Partial<Record<TiposEntidadesGym, Entidade>>}
 */
 export const EntidadesGym = {
-    exercicio_treino, pessoa
+    exercicio_treino, pessoa, treino
 }

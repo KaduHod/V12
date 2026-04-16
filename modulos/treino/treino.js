@@ -4,10 +4,9 @@ import pool from "../../database/conn.js";
 const treino_router = e.Router();
 /** @type {import('express').RequestHandler} */
 const index = async (req, res) => {
-    const entidade = EntidadesGym.exercicio_treino;
+    const entidade = EntidadesGym.treino;
     // Dados de exemplo para a lista (pode ser array vazio inicialmente)
-    const [ itens ] = await pool.promise().query(`SELECT * FROM treino_exercise`)
-    console.log(itens)
+    const [ itens ] = await pool.promise().query(`SELECT * FROM treino`)
     res.render('motor/form', {
         entidade,
         itens,
@@ -16,5 +15,17 @@ const index = async (req, res) => {
 
 }
 
+/** @type {import('express').RequestHandler} */
+const treino_exercicio = async (req, res) => {
+    const entidade = EntidadesGym.exercicio_treino;
+    const [ itens ] = await pool.promise().query(`SELECT * FROM treino_exercise`)
+    res.render('motor/form', {
+        entidade,
+        itens,
+        entidades: EntidadesGym
+    });
+}
+
 treino_router.get("/", index);
+treino_router.get("/exercicio", treino_exercicio);
 export default treino_router;
