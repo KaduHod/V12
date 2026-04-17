@@ -46,6 +46,11 @@
                       <div class="flex justify-center">
                         <input type="checkbox" class="<%= inputClass %>" name="<%= coluna.nome %>[]" <%= item[coluna.nome] ? 'checked' : '' %>>
                       </div>
+                    <% } else if(coluna.tipo === 'label') { %>
+                    <div class="flex items-center h-[44px] p-2 rounded">
+                        <span class="text-sm"><%= item[coluna.nome] || '' %></span>
+                        <input type="hidden" name="<%= coluna.nome %>[]" value="<%= item[coluna.nome] || '' %>">
+                    </div>
                     <% } else { %>
                       <input type="<%= inputType %>" class="<%= inputClass %>" name="<%= coluna.nome %>[]" value="<%= item[coluna.nome] || '' %>">
                     <% }
@@ -92,6 +97,11 @@
                 </label>
                 <% if (inputType === 'checkbox') { %>
                   <input type="checkbox" class="h-5 w-5" name="<%= coluna.nome %>[]" <%= item[ coluna.label ?? coluna.nome] ? 'checked' : '' %> <% if (coluna.pk) { %>readonly<% } %>>
+                <% } else if(coluna.tipo === 'label') { %>
+                  <div class="flex items-center h-[44px] p-2 rounded">
+                    <span class="text-sm"><%= item[coluna.nome] || '' %></span>
+                    <input type="hidden" name="<%= coluna.nome %>[]" value="<%= item[coluna.nome] || '' %>">
+                  </div>
                 <% } else { %>
                   <input
                     type="<%= inputType %>"

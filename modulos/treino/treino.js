@@ -6,7 +6,7 @@ const treino_router = e.Router();
 const index = async (req, res) => {
     const entidade = EntidadesGym.treino;
     // Dados de exemplo para a lista (pode ser array vazio inicialmente)
-    const [ itens ] = await pool.promise().query(`SELECT * FROM treino`)
+    const [ itens ] = await pool.promise().query(`SELECT t.*, p.nome as pessoa FROM treino t left join pessoa p on p.id = t.pessoa_id`)
     res.render('motor/form', {
         entidade,
         itens,

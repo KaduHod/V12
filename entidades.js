@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * @typedef {"string" | "number" | "boolean"} TipoColuna
+ * @typedef {"string" | "number" | "boolean" | "label" } TipoColuna
  * @typedef {"unico" | "lista" } TipoEntidade
  * @typedef {"treino" | "exercicio" | "pessoa" | "exercicio_treino"} TiposEntidadesGym
  */
@@ -98,6 +98,12 @@ const treino = {
             label:"Nome",
             tipo:"string",
         },
+        {
+            nome: "pessoa",
+            label: "Pessoa",
+            tipo: "label",
+            fk: true
+        }
     ]
 }
 /** @type {Entidade} */
