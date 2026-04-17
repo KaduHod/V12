@@ -2,7 +2,7 @@
 /**
  * @typedef {"string" | "number" | "boolean"} TipoColuna
  * @typedef {"unico" | "lista" } TipoEntidade
- * @typedef {"treino" | "exercise" | "pessoa" | "exercicio_treino"} TiposEntidadesGym
+ * @typedef {"treino" | "exercicio" | "pessoa" | "exercicio_treino"} TiposEntidadesGym
  */
 /**
  * @typedef {Object} Coluna
@@ -24,7 +24,7 @@
  */
 
 
-/** @type {Coluna}*/
+/** @type {Coluna} */
 const DEFAULT_ID = {
     nome:"id",
     label:"ID",
@@ -33,9 +33,25 @@ const DEFAULT_ID = {
 }
 
 /** @type {Entidade} */
+const exercicio = {
+    nome: "Exercício",
+    http_path_name: "treino/exercicio",
+    tabela: "exercise",
+    tipo: "lista",
+    colunas: [
+        DEFAULT_ID,
+        {
+            nome:"name",
+            label:"Nome",
+            tipo:"string",
+        }
+    ]
+}
+
+/** @type {Entidade} */
 const exercicio_treino = {
     nome: "Exercicio Treino",
-    http_path_name: "treino/exercicio",
+    http_path_name: "treino/treino_exercicio",
     tabela: "treino_exercise",
     tipo: "lista",
     colunas: [
@@ -104,5 +120,5 @@ const pessoa = {
     @type {Partial<Record<TiposEntidadesGym, Entidade>>}
 */
 export const EntidadesGym = {
-    exercicio_treino, pessoa, treino
+    exercicio_treino, pessoa, treino, exercicio
 }

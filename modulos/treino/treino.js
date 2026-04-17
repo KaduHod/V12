@@ -14,6 +14,16 @@ const index = async (req, res) => {
     });
 
 }
+/** @type {import('express').RequestHandler} */
+const exercicio = async (req, res) => {
+    const entidade = EntidadesGym.exercicio;
+    const [ itens ] = await pool.promise().query(`SELECT * FROM exercise`)
+    res.render('motor/form', {
+        entidade,
+        itens,
+        entidades: EntidadesGym
+    });
+}
 
 /** @type {import('express').RequestHandler} */
 const treino_exercicio = async (req, res) => {
@@ -27,5 +37,6 @@ const treino_exercicio = async (req, res) => {
 }
 
 treino_router.get("/", index);
-treino_router.get("/exercicio", treino_exercicio);
+treino_router.get("/exercicio", exercicio);
+treino_router.get("/treino_exercicio", treino_exercicio);
 export default treino_router;
