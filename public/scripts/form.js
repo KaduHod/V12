@@ -23,5 +23,4 @@ export default function loadEvents() {
     const addItem = document.getElementById("adicionar-item");
     addItem.addEventListener('click', adicionar_item);
 }
-loadEvents();
 
