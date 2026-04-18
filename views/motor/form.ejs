@@ -106,9 +106,11 @@
                 <% } else { %>
                   <input
                     type="<%= inputType %>"
+                    data-nome="<%= coluna.nome %>"
+                    data-valor="<%= item[coluna.nome] %>"
                     class="w-full p-2 border rounded min-h-[44px] text-sm <%= coluna.pk ? 'bg-gray-100' : '' %>"
                     name="<%= coluna.nome %>[]"
-                    value="<%= item[coluna.label ?? coluna.nome] || '' %>"
+                    value="<%= item[coluna.nome] || '' %>"
                   >
                   <% } %>
               </div>
