@@ -12,8 +12,8 @@
  * @property {boolean} [pk=false]
  * @property {boolean} [hidden=false]
  * @property {boolean} [search=false]
- * @property {boolean|string} [fk=false]
- * @property {boolean|string} [fk_tabela=false]
+ * @property {boolean} [fk=false]
+ * @property {string} [fk_tabela]
  * @property {boolean} [filtro=false]
  */
 
