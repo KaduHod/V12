@@ -31,7 +31,7 @@ const index = async (req, res) => {
     const entidade = EntidadesGym.treino;
     // Dados de exemplo para a lista (pode ser array vazio inicialmente)
     const [ itens ] = await pool.promise().query(`SELECT t.*, p.id as pessoa_id, p.nome as pessoa FROM treino t left join pessoa p on p.id = t.pessoa_id`)
-    res.render('motor/form', {
+    res.render('motor/form/form', {
         layout: false,
         entidade,
         itens,
@@ -43,7 +43,7 @@ const index = async (req, res) => {
 const exercicio = async (req, res) => {
     const entidade = EntidadesGym.exercicio;
     const [ itens ] = await pool.promise().query(`SELECT * FROM exercise`)
-    res.render('motor/form', {
+    res.render('motor/form/form', {
         layout: false,
         entidade,
         itens,
@@ -55,7 +55,7 @@ const exercicio = async (req, res) => {
 const treino_exercicio = async (req, res) => {
     const entidade = EntidadesGym.exercicio_treino;
     const [ itens ] = await pool.promise().query(`SELECT * FROM treino_exercise`)
-    res.render('motor/form', {
+    res.render('motor/form/form', {
         layout: false,
         entidade,
         itens,

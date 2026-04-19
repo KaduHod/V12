@@ -31,7 +31,7 @@ app.get('/', async (req, res) => {
 app.get('/pessoa', async (req, res) => {
     const entidade = EntidadesGym.pessoa;
     const [itens] = await pool.promise().query("SELECT * FROM pessoa");
-    res.render('motor/form', {
+    res.render('motor/form/form', {
         entidade,
         layout: false,
         itens: itens,

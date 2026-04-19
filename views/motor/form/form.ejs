@@ -1,0 +1,59 @@
+<%
+  // Monta o grid-template-columns baseado nos tipos das colunas visíveis
+  const colunasVisiveis = entidade.colunas.filter(c => !c.hidden);
+  const gridCols = colunasVisiveis.map(c => {
+    if (c.pk || c.tipo === 'boolean') return 'min-content';
+    return 'minmax(min-content, 1fr)';
+  }).join(' ') + ' min-content'; // última coluna: ações
+%>
+<h1 class="text-xl font-bold mb-4"><%= entidade.nome %></h1>
+<%- include('filtros', { colunasVisiveis, gridCols, entidade, itens }) %>
+<form id="form-<%= entidade.nome %>">
+    <div class="mb-5 flex flex-col sm:flex-row gap-3">
+        <button
+                type="button"
+                data-id="adicionar-item"
+                class="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 min-h-[44px]"
+                >
+                + Adicionar
+        </button>
+            <button
+                    type="submit"
+                    class="w-full sm:w-auto bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 min-h-[44px]"
+                    >
+                    Salvar
+            </button>
+    </div>
+  <%# ── Header (só desktop) ── %>
+  <div class="hidden md:grid items-center bg-gray-100 border border-gray-300 px-2 py-1 gap-2"
+       style="grid-template-columns: <%= gridCols %>">
+    <% colunasVisiveis.forEach(coluna => { %>
+      <div class="px-2 py-1 text-sm font-medium whitespace-nowrap">
+        <%= coluna.label ?? coluna.nome %>
+      </div>
+    <% }) %>
+    <div class="px-2 py-1 text-sm font-medium whitespace-nowrap">Ações</div>
+  </div>
+  <%- include('itens_container', { colunasVisiveis, gridCols, entidade, itens }) %>
+    <div class="mt-5 flex flex-col sm:flex-row gap-3">
+        <button
+                type="button"
+                data-id="adicionar-item"
+                class="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 min-h-[44px]"
+                >
+                + Adicionar
+        </button>
+            <button
+                    type="submit"
+                    class="w-full sm:w-auto bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 min-h-[44px]"
+                    >
+                    Salvar
+            </button>
+    </div>
+</form>
+<script type="module" src="scripts/form.js"></script>
+<script type="module" src="scripts/search.js"></script>
+<script type="module">
+        import loadEvents from "/scripts/form.js";
+        loadEvents();
+</script>
