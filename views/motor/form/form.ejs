@@ -7,7 +7,7 @@
   }).join(' ') + ' min-content'; // última coluna: ações
 %>
 <h1 class="text-xl font-bold mb-4"><%= entidade.nome %></h1>
-<%- include('filtros', { colunasVisiveis, gridCols, entidade, itens }) %>
+<%- include('filtros', { entidade, itens }) %>
 <form id="form-<%= entidade.nome %>">
     <div class="mb-5 flex flex-col sm:flex-row gap-3">
         <button
@@ -34,7 +34,7 @@
     <% }) %>
     <div class="px-2 py-1 text-sm font-medium whitespace-nowrap">Ações</div>
   </div>
-  <%- include('itens_container', { colunasVisiveis, gridCols, entidade, itens }) %>
+  <%- include('itens_container', { entidade, itens }) %>
     <div class="mt-5 flex flex-col sm:flex-row gap-3">
         <button
                 type="button"

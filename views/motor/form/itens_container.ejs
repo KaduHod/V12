@@ -1,3 +1,11 @@
+<%
+  // Monta o grid-template-columns baseado nos tipos das colunas visíveis
+  const colunasVisiveis = entidade.colunas.filter(c => !c.hidden);
+  const gridCols = colunasVisiveis.map(c => {
+    if (c.pk || c.tipo === 'boolean') return 'min-content';
+    return 'minmax(min-content, 1fr)';
+  }).join(' ') + ' min-content'; // última coluna: ações
+%>
   <%# ── Container de itens ── %>
   <div id="itens-container">
     <% if (itens && itens.length > 0) { %>

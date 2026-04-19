@@ -3,10 +3,8 @@ import { EntidadesGym } from "../../entidades.js";
 import pool from "../../database/conn.js";
 const treino_router = e.Router();
 
-
 /** @type {import('express').RequestHandler} */
 const search = async (req, res) => {
-    console.log({body: req.body, query: req.query})
     let argumentos = [];
     let query = '';
     switch (req.query.coluna) {
@@ -29,15 +27,34 @@ const search = async (req, res) => {
 /** @type {import('express').RequestHandler} */
 const index = async (req, res) => {
     const entidade = EntidadesGym.treino;
-    // Dados de exemplo para a lista (pode ser array vazio inicialmente)
-    const [ itens ] = await pool.promise().query(`SELECT t.*, p.id as pessoa_id, p.nome as pessoa FROM treino t left join pessoa p on p.id = t.pessoa_id`)
-    res.render('motor/form/form', {
+    let query = "SELECT t.*, p.id as pessoa_id, p.nome as pessoa FROM treino t left join pessoa p on p.id = t.pessoa_id where 1=1";
+    let argumentos = [];
+    let where = [];
+    let where_q = "";
+    let page = 'motor/form/form'
+    if(req.query.filtro) {
+        if(req.query.pessoa) {
+            argumentos.push(req.query.pessoa)
+            where.push(" p.id = ?")
+        }
+        if(req.query.nome) {
+            argumentos.push(req.query.nome)
+            where.push(" t.nome = ?")
+        }
+        page = 'motor/form/itens_container'
+    }
+    if(where.length > 0) {
+        where_q = " and " + where.join("and");
+    }
+    query += where_q
+    const [ itens ] = await pool.promise().query(query, argumentos)
+
+    res.render(page, {
         layout: false,
         entidade,
         itens,
         entidades: EntidadesGym
     });
-
 }
 /** @type {import('express').RequestHandler} */
 const exercicio = async (req, res) => {

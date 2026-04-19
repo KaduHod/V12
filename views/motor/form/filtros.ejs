@@ -1,15 +1,23 @@
+<%
+  // Monta o grid-template-columns baseado nos tipos das colunas visíveis
+  const colunasVisiveis = entidade.colunas.filter(c => !c.hidden);
+  const gridCols = colunasVisiveis.map(c => {
+    if (c.pk || c.tipo === 'boolean') return 'min-content';
+    return 'minmax(min-content, 1fr)';
+  }).join(' ') + ' min-content'; // última coluna: ações
+%>
 <%# ── Filtros ── %>
 <div class="mb-5">
     <form hx-get="/<%= entidade.http_path_name %>"
-          hx-target="#itens_container"
-          hx-swap="innerHTML"
+          hx-target="#itens-container"
+          hx-swap="outerHTML"
           class="flex flex-wrap gap-2">
-
+            <input type="hidden" name="filtro" value="1">
           <% colunasVisiveis.forEach(coluna => { %>
 
           <% if (coluna.tipo === 'boolean') { %>
           <label class="flex items-center gap-1 text-sm border border-gray-300 rounded px-2 py-1 bg-white">
-              <input type="checkbox" name="filtro_<%= coluna.nome %>" class="h-4 w-4">
+              <input type="checkbox" name="<%= coluna.nome %>" class="h-4 w-4">
               <%= coluna.label ?? coluna.nome %>
           </label>
 
@@ -28,13 +36,13 @@
                       autocomplete="off"
                       data-search-input>
                       <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
-                      <input type="hidden" name="filtro_<%= coluna.nome %>_id" data-search-hidden>
+                      <input type="hidden" name="<%= coluna.nome %>" data-search-hidden>
           </div>
 
           <% } else if (coluna.tipo !== 'label' && !coluna.pk) { %>
           <input
                   type="<%= coluna.tipo === 'number' ? 'number' : 'text' %>"
-                  name="filtro_<%= coluna.nome %>"
+                  name="<%= coluna.nome %>"
                   placeholder="<%= coluna.label ?? coluna.nome %>..."
                   class="p-2 border border-gray-300 rounded text-sm">
 
@@ -43,6 +51,6 @@
                   <% }) %>
 
                   <button type="submit" class="px-4 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">Filtrar</button>
-                  <button type="reset" hx-get="/<%= entidade.http_path_name %>" hx-target="main" hx-swap="innerHTML" class="px-4 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">Limpar</button>
+                  <button type="reset" hx-get="/<%= entidade.http_path_name %>?filtro=1" hx-target="#itens-container" hx-swap="outerHTML" class="px-4 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">Limpar</button>
     </form>
 </div>
