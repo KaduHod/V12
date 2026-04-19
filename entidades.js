@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * @typedef {"string" | "number" | "boolean" | "label" | "search" } TipoColuna
+ * @typedef {"string" | "number" | "boolean" | "label" } TipoColuna
  * @typedef {"unico" | "lista" } TipoEntidade
  * @typedef {"treino" | "exercicio" | "pessoa" | "exercicio_treino"} TiposEntidadesGym
  */
@@ -11,6 +11,7 @@
  * @property {string} [label=null]
  * @property {boolean} [pk=false]
  * @property {boolean} [hidden=false]
+ * @property {boolean} [search=false]
  * @property {boolean|string} [fk=false]
  */
 
@@ -101,13 +102,8 @@ const treino = {
         {
             nome: "pessoa",
             label: "Pessoa",
-            tipo: "label",
-            fk: true
-        },
-        {
-            nome: "pessoa",
-            label: "Pessoa",
-            tipo: "search",
+            tipo: "number",
+            search: true,
             fk: true
         }
     ]

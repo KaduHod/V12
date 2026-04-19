@@ -54,7 +54,7 @@
                   <div class="flex items-center h-[44px] p-2 rounded">
                     <span class="text-sm" data-item-label="true"><%= item[coluna.nome] || '' %></span>
                   </div>
-                <% } else if (coluna.tipo === 'search') { %>
+                <% } else if (coluna.search) { %>
                   <div class="relative" data-search-field>
                     <input
                       type="text"

@@ -1,9 +1,8 @@
 <%# ── Filtros ── %>
 <div class="mb-5">
     <form hx-get="/<%= entidade.http_path_name %>"
-          hx-target="main"
+          hx-target="#itens_container"
           hx-swap="innerHTML"
-          hx-trigger="change, keyup delay:500ms"
           class="flex flex-wrap gap-2">
 
           <% colunasVisiveis.forEach(coluna => { %>
@@ -14,7 +13,7 @@
               <%= coluna.label ?? coluna.nome %>
           </label>
 
-          <% } else if (coluna.tipo === 'search') { %>
+          <% } else if (coluna.search) { %>
           <div class="relative" data-search-field>
               <input
                       type="text"
