@@ -22,7 +22,7 @@ export function gerarFiltroSqlEntidade(entidade, query, conf_aliases = {}) {
             let tabela_alias = "";
             let coluna_filtro = coluna_entidade.nome;
             if(coluna_entidade.fk) {
-                tabela_alias = conf_aliases[coluna_entidade.fk_tabela]+".";
+                tabela_alias = conf_aliases[coluna_entidade.fk]+".";
                 coluna_filtro = 'id';
             } else {
                 tabela_alias = conf_aliases[entidade.tabela]+".";

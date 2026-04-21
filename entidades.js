@@ -12,13 +12,14 @@
  * @property {boolean} [pk=false]
  * @property {boolean} [hidden=false]
  * @property {boolean} [search=false]
- * @property {boolean} [fk=false]
+ * @property {string} [fk]
  * @property {string} [fk_tabela]
  * @property {boolean} [filtro=false]
  */
 
 /**
  * @typedef {Object} Entidade
+ * @property {string} [modulo]
  * @property {string} nome
  * @property {string} http_path_name
  * @property {string} tabela
@@ -38,6 +39,7 @@ const DEFAULT_ID = {
 /** @type {Entidade} */
 const exercicio = {
     nome: "Exercício",
+    modulo: "treino",
     http_path_name: "treino/exercicio",
     tabela: "exercise",
     tipo: "lista",
@@ -55,6 +57,7 @@ const exercicio = {
 const exercicio_treino = {
     nome: "Exercicio Treino",
     http_path_name: "treino/treino_exercicio",
+    modulo: "treino",
     tabela: "treino_exercise",
     tipo: "lista",
     colunas: [
@@ -63,12 +66,12 @@ const exercicio_treino = {
             nome: "treino",
             tipo: "number",
             hidden: true,
-            fk: true,
+            fk: "treino",
         },
         {
             nome: "exercicio",
             tipo: "number",
-            fk: "exercise"
+            fk: "exercise",
         },
         {
             nome: "series",
@@ -107,8 +110,7 @@ const treino = {
             label: "Pessoa",
             tipo: "number",
             search: true,
-            fk: true,
-            fk_tabela: "pessoa",
+            fk: "pessoa",
             filtro: true
         }
     ]
