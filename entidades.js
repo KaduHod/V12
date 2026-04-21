@@ -97,6 +97,7 @@ const treino = {
     tabela: "treino",
     http_path_name: "treino",
     tipo: "lista",
+    modulo: "treino",
     colunas: [
         DEFAULT_ID,
         {
@@ -121,6 +122,7 @@ const pessoa = {
     tabela: "pessoa",
     http_path_name: "pessoa",
     tipo: "lista",
+    modulo: "treino",
     colunas: [
         DEFAULT_ID,
         {

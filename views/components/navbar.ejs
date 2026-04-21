@@ -1,3 +1,19 @@
+<%
+  // Agrupa entidades: com módulo ficam agrupadas, sem módulo ficam soltas
+  const entidadesArr = entidades ? Object.values(entidades) : [];
+  const modulos = {};
+  const semModulo = [];
+
+  entidadesArr.forEach(entidade => {
+    if (entidade.modulo) {
+      if (!modulos[entidade.modulo]) modulos[entidade.modulo] = [];
+      modulos[entidade.modulo].push(entidade);
+    } else {
+      semModulo.push(entidade);
+    }
+  });
+%>
+
 <%# ── MOBILE: barra superior com hamburger ── %>
 <header class="md:hidden bg-gray-800 flex items-center justify-between px-4 h-14 fixed top-0 left-0 right-0 z-50">
   <a href="/" class="text-white font-bold text-sm">Gerenciador pessoal</a>
@@ -15,14 +31,37 @@
 <%# ── MOBILE: dropdown menu ── %>
 <div id="menu-mobile" class="md:hidden hidden fixed top-14 left-0 right-0 z-40 bg-gray-800 border-t border-gray-700 px-4 py-3 space-y-1">
   <a href="/" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
-  <% if (entidades) { %>
-    <% Object.values(entidades).forEach(entidade => { %>
-      <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
-         class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
-        <%= entidade.nome %>
-      </a>
-    <% }) %>
-  <% } %>
+
+  <%# Entidades sem módulo %>
+  <% semModulo.forEach(entidade => { %>
+    <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+       class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
+      <%= entidade.nome %>
+    </a>
+  <% }) %>
+
+  <%# Módulos com suas entidades %>
+  <% Object.entries(modulos).forEach(([nomeModulo, itens]) => { %>
+    <div data-modulo-mobile="<%= nomeModulo %>">
+      <button
+        onclick="toggleModulo(this)"
+        class="w-full flex items-center justify-between text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"
+      >
+        <span><%= nomeModulo.charAt(0).toUpperCase() + nomeModulo.slice(1) %></span>
+        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <div class="hidden pl-3 space-y-1">
+        <% itens.forEach(entidade => { %>
+          <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+             class="cursor-pointer block text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm">
+            <%= entidade.nome %>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  <% }) %>
 </div>
 
 <%# ── DESKTOP: sidebar lateral ── %>
@@ -32,14 +71,38 @@
   </div>
   <nav class="flex-1 px-2 py-4 space-y-1">
     <a href="/" class="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">Home</a>
-    <% if (entidades) { %>
-      <% Object.values(entidades).forEach(entidade => { %>
-        <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
-           class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
-          <%= entidade.nome %>
-        </a>
-      <% }) %>
-    <% } %>
+
+    <%# Entidades sem módulo %>
+    <% semModulo.forEach(entidade => { %>
+      <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+         class="cursor-pointer block text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm">
+        <%= entidade.nome %>
+      </a>
+    <% }) %>
+
+    <%# Módulos com suas entidades %>
+    <% Object.entries(modulos).forEach(([nomeModulo, itens]) => { %>
+      <div data-modulo="<%= nomeModulo %>">
+        <button
+          onclick="toggleModulo(this)"
+          class="w-full flex items-center justify-between text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm"
+        >
+          <span><%= nomeModulo.charAt(0).toUpperCase() + nomeModulo.slice(1) %></span>
+          <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <div class="hidden pl-3 space-y-1">
+          <% itens.forEach(entidade => { %>
+            <a hx-target="main" hx-swap="innerHTML" hx-get="/<%= entidade.http_path_name %>"
+               class="cursor-pointer block text-gray-400 hover:text-white px-3 py-2 rounded-md text-sm">
+              <%= entidade.nome %>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    <% }) %>
+
   </nav>
 </aside>
 
@@ -47,6 +110,7 @@
 <div class="md:hidden h-14"></div>
 
 <script>
+  // ── Hamburger ──
   const toggle   = document.getElementById('menu-toggle');
   const menuMob  = document.getElementById('menu-mobile');
   const iconOpen  = document.getElementById('icon-open');
@@ -58,4 +122,13 @@
     iconClose.classList.toggle('hidden', aberto);
     toggle.setAttribute('aria-expanded', String(!aberto));
   });
+
+  // ── Expansão de módulos ──
+  function toggleModulo(btn) {
+    const submenu = btn.nextElementSibling;
+    const icon = btn.querySelector('svg');
+    const fechado = submenu.classList.contains('hidden');
+    submenu.classList.toggle('hidden', !fechado);
+    icon.style.transform = fechado ? 'rotate(90deg)' : '';
+  }
 </script>
