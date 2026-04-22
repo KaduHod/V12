@@ -14,10 +14,11 @@ function adicionar_item() {
     // Mobile
     const primeiro_item = document.querySelector('div[data-item="true"]');
     if(primeiro_item.innerHTML) {
-        const novo_id = "untracked_"+Math.random().toString(36).substring(2, 10);
+        const novo_id = "___"+Math.random().toString(36).substring(2, 10);
         const novo_html = replaceAtributosParaNovoItem(primeiro_item.outerHTML, novo_id);
         ITENS_CONTAINER().insertAdjacentHTML('afterbegin', novo_html);
         const novo_item = ITENS_CONTAINER().querySelector(`div[data-id="${novo_id}"]`);
+        novo_item.querySelector('input[type="hidden"][name="id[]"]').value = novo_id;
         htmx.process(novo_item);
     }
 }

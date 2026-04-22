@@ -10,7 +10,7 @@
 %>
 <h1 class="text-xl font-bold mb-4"><%= entidade.nome %></h1>
 <%- include('filtros', { entidade, itens }) %>
-<form id="form-<%= entidade.nome %>" hx-post="<%= entidade.http_path_name %>">
+<form id="form-<%= entidade.nome %>" hx-post="<%= entidade.http_path_name %>" hx-target="main" hx-swap="innerHTML">
     <div class="mb-5 flex flex-col sm:flex-row gap-3">
         <button
                 type="button"

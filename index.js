@@ -10,6 +10,7 @@ import pool from "./database/conn.js";
 import ejsLayout from "express-ejs-layouts";
 import { gerar_filtro_sql_entidade, montar_paginacao, montar_query_total } from "./filtro.js";
 import { ITENS_POR_PAGINA } from "./config.js";
+import { upsert_lista } from "./upsert.js";
 
 loadEnvFile()
 const __filename = fileURLToPath(import.meta.url);
@@ -31,7 +32,8 @@ app.get('/', async (req, res) => {
     });
 })
 app.post('/pessoa', async (req, res) => {
-    console.log(req.body)
+    await upsert_lista(EntidadesGym.pessoa, req.body)
+    return res.redirect('/pessoa')
 })
 app.get('/pessoa', async (req, res) => {
     const entidade = EntidadesGym.pessoa;
@@ -39,7 +41,9 @@ app.get('/pessoa', async (req, res) => {
     pagina = parseInt(pagina);
     let query = "SELECT * FROM pessoa p where 1=1";
     let argumentos = []
+    let page = 'motor/form/form'
     if(req.query.filtro) {
+        page = 'motor/form/itens_container';
         const filtro = gerar_filtro_sql_entidade(entidade, req.query, {pessoa: "p"})
         if(filtro.sql) {
             query += ' and ' + filtro.sql;
@@ -52,7 +56,7 @@ app.get('/pessoa', async (req, res) => {
         pool.promise().query(montar_paginacao(query, pagina), argumentos),
         pool.promise().query(montar_query_total(query), argumentos)
     ]).then((results) => [results[0][0], results[1][0]]);
-    res.render('motor/form/form', {
+    res.render(page, {
         entidade,
         layout: false,
         itens: itens,
