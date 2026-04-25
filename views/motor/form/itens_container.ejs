@@ -67,7 +67,6 @@
                   <div class="relative" data-search-field>
                     <input
                       type="text"
-                     data-valor-inicial="<%= item[coluna.nome] || '' %>"
                       hx-post="/<%= entidade.http_path_name %>/search?coluna=<%= coluna.nome %>"
                       hx-trigger="keyup changed delay:500ms"
                       hx-target="next ul"
@@ -81,7 +80,7 @@
                       data-search-input
                     >
                     <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
-                    <input  data-valor-inicial="<%= item[coluna.nome] || '' %>" type="hidden" name="<%= coluna.nome %>_id" value="<%= item[coluna.nome + '_id'] || '' %>" data-search-hidden>
+                    <input  data-valor-inicial="<%= item[coluna.nome + '_id'] || '' %>" type="hidden" name="<%= coluna.nome %>_id" value="<%= item[coluna.nome + '_id'] || '' %>" data-search-hidden>
                   </div>
                 <% } else { %>
                 <input
