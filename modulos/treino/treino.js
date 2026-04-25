@@ -96,11 +96,10 @@ const treino_form = async (req, res) => {
                 where t.deleted_at is null and t.id = ?
     `;
     const [item] = await pool.promise().query(query, [id])
-    console.log(item, query)
     res.render('motor/form/form_entidade', {
         layout: false,
         entidade,
-        item,
+        item: item[0],
         entidades: EntidadesGym
     });
 
