@@ -1,4 +1,4 @@
-const FORM = () => document.getElementById('form-<%= entidade.nome %>');
+const FORM = document.forms['form-principal'];
 const ITENS_CONTAINER = () => document.getElementById('itens-container');
 function replaceAtributosParaNovoItem(text, id) {
     return text
@@ -46,5 +46,29 @@ export default function loadEvents() {
             e.querySelector('input[name="pular_upsert[]"]').value = input_modificado ? 'N' : 'S';
         });
         e.querySelector('input[data-remove-item]').addEventListener('change', gerencia_exluir)
+    });
+    document.forms['form-principal'].addEventListener('htmx:configRequest', (e) => {
+        const params = e.detail.parameters;
+
+        // coleta índices que devem ser removidos
+        const indicesParaRemover = [];
+
+        data_item.forEach((container, index) => {
+            const pular = container.querySelector('input[name="pular_upsert[]"][value="S"]');
+            if (pular) {
+                indicesParaRemover.push(index);
+            }
+        });
+
+        // remove de trás pra frente (IMPORTANTE)
+        indicesParaRemover.sort((a, b) => b - a);
+
+        indicesParaRemover.forEach(index => {
+            Object.keys(params).forEach(key => {
+                if (Array.isArray(params[key])) {
+                    params[key].splice(index, 1);
+                }
+            });
+        });
     });
 }
