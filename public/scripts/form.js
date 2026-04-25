@@ -31,13 +31,15 @@ function adicionar_item() {
  */
 function gerencia_exluir(event) {
     event.target.parentNode.querySelector("input[type='hidden'][name='excluir[]']").value = event.target.checked ? 'S' : 'N';
+    event.target.closest('div[data-item="true"]').dispatchEvent(new Event('input'))
+
 }
 
 export default function loadEvents() {
     const add_item = document.querySelectorAll("button[data-id='adicionar-item'");
     add_item.forEach(e => e.addEventListener('click', adicionar_item));
-    const data_item = document.querySelectorAll('div[data-item="true"]');
-    data_item.forEach(e => {
+    const data_item = () => document.querySelectorAll('div[data-item="true"]');
+    data_item().forEach(e => {
         e.addEventListener('input', (event) => {
             if(!e.querySelector('input[name="pular_upsert[]"]')) return;
             const input_modificado = [... e.querySelectorAll('input')].find(input => {
@@ -49,20 +51,14 @@ export default function loadEvents() {
     });
     document.forms['form-principal'].addEventListener('htmx:configRequest', (e) => {
         const params = e.detail.parameters;
-
-        // coleta índices que devem ser removidos
         const indicesParaRemover = [];
-
-        data_item.forEach((container, index) => {
+        data_item().forEach((container, index) => {
             const pular = container.querySelector('input[name="pular_upsert[]"][value="S"]');
             if (pular) {
                 indicesParaRemover.push(index);
             }
         });
-
-        // remove de trás pra frente (IMPORTANTE)
         indicesParaRemover.sort((a, b) => b - a);
-
         indicesParaRemover.forEach(index => {
             Object.keys(params).forEach(key => {
                 if (Array.isArray(params[key])) {
