@@ -10,7 +10,6 @@
   <div id="itens-container">
     <% if (itens && itens.length > 0) { %>
       <% itens.forEach((item, index) => { %>
-
         <%# ── MOBILE: card empilhado | DESKTOP: linha em grid ── %>
         <div data-item="true"
              data-id="<%= index %>"
@@ -21,9 +20,9 @@
 
           <%# Campos hidden %>
           <% entidade.colunas.filter(c => c.hidden).forEach(coluna => { %>
-            <input type="hidden" name="<%= coluna.nome %>" value="<%= item[coluna.nome] || '' %>">
+            <input type="hidden" data-valor-inicial="<%= item[coluna.nome] || '' %>" name="<%= coluna.nome %>" value="<%= item[coluna.nome] || '' %>">
           <% }) %>
-
+            <input type="hidden" name="pular_upsert[]" value="S">
           <%# Campos visíveis %>
           <% colunasVisiveis.forEach(coluna => { %>
 
@@ -37,7 +36,7 @@
                 <span class="text-sm" data-item-pk="true"><%= item[coluna.nome] || '' %></span>
               </div>
 
-                <input type="hidden" name="<%= coluna.nome %>[]" value="<%= item[coluna.nome] || '' %>">
+                <input type="hidden"  data-valor-inicial="<%= item[coluna.nome] || '' %>" name="<%= coluna.nome %>[]" value="<%= item[coluna.nome] || '' %>">
             <% } else { %>
               <%
                 let inputType = 'text';
@@ -56,6 +55,7 @@
                     <input type="checkbox"
                            class="h-5 w-5"
                            name="<%= coluna.nome %>[]"
+                           data-valor-inicial="<%= item[coluna.nome] || '' %>"
                            <%= item[coluna.nome] ? 'checked' : '' %>>
                   </div>
 
@@ -67,6 +67,7 @@
                   <div class="relative" data-search-field>
                     <input
                       type="text"
+                     data-valor-inicial="<%= item[coluna.nome] || '' %>"
                       hx-post="/<%= entidade.http_path_name %>/search?coluna=<%= coluna.nome %>"
                       hx-trigger="keyup changed delay:500ms"
                       hx-target="next ul"
@@ -80,13 +81,13 @@
                       data-search-input
                     >
                     <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
-                    <input type="hidden" name="<%= coluna.nome %>_id" value="<%= item[coluna.nome + '_id'] || '' %>" data-search-hidden>
+                    <input  data-valor-inicial="<%= item[coluna.nome] || '' %>" type="hidden" name="<%= coluna.nome %>_id" value="<%= item[coluna.nome + '_id'] || '' %>" data-search-hidden>
                   </div>
                 <% } else { %>
                 <input
+                    data-valor-inicial="<%= item[coluna.nome] || '' %>"
                     type="<%= inputType %>"
                     data-nome="<%= coluna.nome %>"
-                    data-valor="<%= item[coluna.nome] %>"
                     class="w-full p-2 border rounded min-h-[44px] text-sm <%= coluna.pk ? 'bg-gray-100' : '' %>"
                     name="<%= coluna.nome %>[]"
                     value="<%= item[coluna.nome] || '' %>">
@@ -99,9 +100,15 @@
           <%# Ações (excluir) %>
           <div class="md:flex md:justify-center md:py-1">
             <label class="block text-xs font-medium text-gray-500 mb-1 md:hidden">Excluir</label>
-            <input type="hidden" name="excluir[]" value="N">
-            <input data-remove-item="true" type="checkbox"
-                   class="cursor-pointer h-5 w-5 border-gray-400 bg-white text-apple-blue">
+            <input
+                type="hidden"
+                name="excluir[]"
+                data-valor-inicial="N"
+                value="N">
+            <input
+                data-remove-item="true"
+                type="checkbox"
+                class="cursor-pointer h-5 w-5 border-gray-400 bg-white text-apple-blue">
           </div>
 
         </div>

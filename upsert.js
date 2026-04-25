@@ -11,6 +11,7 @@ export async function upsert_lista(entidade, body) {
     let argumentos = {};
     body.id.forEach((id, index) => {
         let argumentos_curr = [];
+        if(body.pular_upsert[index] == 'S') return;
         if(id[0] != '_' && body.excluir && body.excluir[index] == 'S') {
             query = `update ${entidade.tabela} set deleted_at = now() where id = ?`;
             argumentos_curr = [id];

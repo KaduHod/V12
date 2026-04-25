@@ -20,6 +20,7 @@ function adicionar_item() {
         const novo_item = ITENS_CONTAINER().querySelector(`div[data-id="${novo_id}"]`);
         novo_item.querySelector('input[type="hidden"][name="id[]"]').value = novo_id;
         novo_item.querySelector('input[data-remove-item]').addEventListener('change', gerencia_exluir);
+        novo_item.querySelector('input[name="pular_upsert[]"]').value = 'N';
         htmx.process(novo_item);
     }
 }
@@ -31,9 +32,19 @@ function adicionar_item() {
 function gerencia_exluir(event) {
     event.target.parentNode.querySelector("input[type='hidden'][name='excluir[]']").value = event.target.checked ? 'S' : 'N';
 }
+
 export default function loadEvents() {
     const add_item = document.querySelectorAll("button[data-id='adicionar-item'");
     add_item.forEach(e => e.addEventListener('click', adicionar_item));
     const data_item = document.querySelectorAll('div[data-item="true"]');
-    data_item.forEach(e => e.querySelector('input[data-remove-item]').addEventListener('change', gerencia_exluir));
+    data_item.forEach(e => {
+        e.addEventListener('input', (event) => {
+            if(!e.querySelector('input[name="pular_upsert[]"]')) return;
+            const input_modificado = [... e.querySelectorAll('input')].find(input => {
+                return input.dataset.valorInicial != undefined && input.dataset.valorInicial != input.value
+            })
+            e.querySelector('input[name="pular_upsert[]"]').value = input_modificado ? 'N' : 'S';
+        });
+        e.querySelector('input[data-remove-item]').addEventListener('change', gerencia_exluir)
+    });
 }
