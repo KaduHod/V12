@@ -30,6 +30,7 @@
       </label>
 
       <% if (coluna.tipo === 'boolean') { %>
+        <div class="flex items-center h-[44px]">
         <input
           type="checkbox"
           id="<%= coluna.nome %>"
@@ -37,9 +38,14 @@
           class="h-5 w-5"
           <%= value ? 'checked' : '' %>
         />
+        </div>
+
       <% } else if (coluna.tipo === 'label') { %>
-        <span class="text-gray-700"><%= value || '—' %></span>
+        <div class="flex items-center h-[44px] px-2 rounded border border-gray-200 bg-gray-50">
+          <span class="text-sm text-gray-700"><%= value || '—' %></span>
+        </div>
         <input type="hidden" name="<%= coluna.nome %>" value="<%= value %>" />
+
       <% } else if (coluna.search) { %>
         <div class="relative" data-search-field>
           <input
@@ -53,7 +59,7 @@
             id="<%= coluna.nome %>"
             name="<%= coluna.nome %>"
             placeholder="Digite para buscar..."
-            class="w-full p-2 border border-gray-300 rounded-md text-sm"
+            class="w-full p-2 border border-gray-300 rounded-md text-sm min-h-[44px]"
             autocomplete="off"
             value="<%= value %>"
             data-search-input
@@ -61,13 +67,19 @@
           <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
           <input type="hidden" name="<%= coluna.nome %>_id" value="<%= itens[entidade.nome][coluna.nome + '_id'] || '' %>" data-search-hidden>
         </div>
+
+      <% } else if (isPk) { %>
+        <div class="flex items-center h-[44px] px-2 rounded border border-gray-200 bg-gray-50 cursor-default">
+          <span class="text-sm" data-item-pk="true"><%= value || '' %></span>
+        </div>
+
       <% } else { %>
         <input
           type="<%= inputType %>"
           id="<%= coluna.nome %>"
           name="<%= coluna.nome %>"
           value="<%= value %>"
-          class="<%= isPk ? 'hidden' : 'w-full border border-gray-300 rounded px-3 py-2 min-h-[44px] ' %>"
+          class="w-full border border-gray-300 rounded px-3 py-2 min-h-[44px]"
           <%= coluna.tipo === 'number' ? 'step="any"' : '' %>
         />
       <% } %>
@@ -82,30 +94,110 @@
   <% if (entidade.filhos && entidade.filhos.length) { %>
     <% entidade.filhos.forEach(filho => { if(filho.tipo === 'lista') { %>
       <h2 class="text-lg font-bold mt-8 mb-1"><%= filho.nome %></h2>
+
+      <%
+        // Grid columns para o filho (mesmo esquema de itens_container)
+        const colunasFilhoVisiveis = filho.colunas.filter(c => !c.hidden);
+        const gridColsFilho = colunasFilhoVisiveis.map(c => {
+          if (c.pk || c.tipo === 'boolean') return 'min-content';
+          return 'minmax(min-content, 1fr)';
+        }).join(' ') + ' min-content';
+      %>
+
       <div class="hidden md:grid items-center bg-gray-100 border border-gray-300 px-2 py-1 gap-2"
-           style="grid-template-columns: <%= filho.colunas.filter(c => !c.hidden).map(c => (c.pk || c.tipo === 'boolean') ? 'min-content' : 'minmax(min-content, 1fr)').join(' ') + ' min-content' %>">
-        <% filho.colunas.filter(c => !c.hidden).forEach(colunaF => { %>
-        <div class="px-2 py-1 text-sm font-medium whitespace-nowrap"><%= colunaF.label ?? colunaF.nome %></div>
+           style="grid-template-columns: <%= gridColsFilho %>">
+        <% colunasFilhoVisiveis.forEach(colunaF => { %>
+          <div class="px-2 py-1 text-sm font-medium whitespace-nowrap"><%= colunaF.label ?? colunaF.nome %></div>
         <% }) %>
         <div class="px-2 py-1 text-sm font-medium whitespace-nowrap">Ações</div>
       </div>
+
       <div id="itens-filho-<%= filho.tabela %>">
         <% (itens.filhos[filho.nome] || []).forEach((itemF, idxF) => { %>
           <div data-item="true"
             class="border border-gray-300 rounded-lg p-4 mb-3 bg-white shadow-sm md:rounded-none md:p-0 md:mb-0 md:shadow-none md:border-0 md:border-b md:grid md:items-center md:gap-2 md:px-2"
-            style="grid-template-columns: <%= filho.colunas.filter(c => !c.hidden).map(c => (c.pk || c.tipo === 'boolean') ? 'min-content' : 'minmax(min-content, 1fr)').join(' ') + ' min-content' %>">
-            <% filho.colunas.filter(c => !c.hidden).forEach(colunaF => { %>
+            style="grid-template-columns: <%= gridColsFilho %>">
+
+            <%# Campos hidden do filho %>
+            <% filho.colunas.filter(c => c.hidden).forEach(colunaF => { %>
+              <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>]" value="<%= itemF[colunaF.nome] || '' %>">
+            <% }) %>
+
+            <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][pular_upsert]" value="S">
+
+            <% colunasFilhoVisiveis.forEach(colunaF => { %>
               <div class="mb-3 md:mb-0 md:py-1">
-                <input
-                  type="text"
-                  class="w-full p-2 border rounded min-h-[44px] text-sm"
-                  name="<%= filho.tabela + '[' + idxF + '][' + colunaF.nome + ']' %>"
-                  value="<%= itemF[colunaF.nome] || '' %>">
+                <label class="block text-xs font-medium text-gray-500 mb-1 md:hidden">
+                  <%= colunaF.label ?? colunaF.nome %>
+                </label>
+
+                <% if (colunaF.tipo === 'boolean') { %>
+                  <div class="flex md:justify-center">
+                    <input type="checkbox"
+                           class="h-5 w-5"
+                           name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>]"
+                           <%= itemF[colunaF.nome] ? 'checked' : '' %>>
+                  </div>
+
+                <% } else if (colunaF.tipo === 'label') { %>
+                  <div class="flex items-center h-[44px] px-2 rounded border border-gray-200 bg-gray-50">
+                    <span class="text-sm"><%= itemF[colunaF.nome] || '—' %></span>
+                  </div>
+                  <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>]" value="<%= itemF[colunaF.nome] || '' %>">
+
+                <% } else if (colunaF.search) { %>
+                  <div class="relative" data-search-field>
+                    <input
+                      type="text"
+                      hx-post="/<%= filho.http_path_name || entidade.http_path_name %>/search?coluna=<%= colunaF.nome %>"
+                      hx-trigger="keyup changed delay:500ms"
+                      hx-target="next ul"
+                      hx-params="busca"
+                      hx-vals='js:{ "busca": document.activeElement.value }'
+                      hx-swap="innerHTML"
+                      placeholder="Digite para buscar..."
+                      class="w-full p-2 border border-gray-300 rounded-md text-sm min-h-[44px]"
+                      autocomplete="off"
+                      value="<%= itemF[colunaF.nome] %>"
+                      data-search-input
+                    >
+                    <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
+                    <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>_id]" value="<%= itemF[colunaF.nome + '_id'] || '' %>" data-search-hidden>
+                  </div>
+
+                <% } else if (colunaF.pk) { %>
+                  <div class="flex items-center h-[44px] px-2 rounded border border-gray-200 bg-gray-50 cursor-default">
+                    <span class="text-sm"><%= itemF[colunaF.nome] || '' %></span>
+                  </div>
+                  <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>]" value="<%= itemF[colunaF.nome] || '' %>">
+
+                <% } else { %>
+                  <%
+                    let inputTypeF = 'text';
+                    if (colunaF.tipo === 'number') inputTypeF = 'number';
+                  %>
+                  <input
+                    type="<%= inputTypeF %>"
+                    class="w-full p-2 border rounded min-h-[44px] text-sm"
+                    name="<%= filho.tabela %>[<%= idxF %>][<%= colunaF.nome %>]"
+                    value="<%= itemF[colunaF.nome] || '' %>"
+                    <%= colunaF.tipo === 'number' ? 'step="any"' : '' %>>
+                <% } %>
               </div>
             <% }) %>
-            <div><!-- ações placeholder --></div>
+
+            <%# Ação de excluir %>
+            <div class="md:flex md:justify-center md:py-1">
+              <label class="block text-xs font-medium text-gray-500 mb-1 md:hidden">Excluir</label>
+              <input type="hidden" name="<%= filho.tabela %>[<%= idxF %>][excluir]" value="N">
+              <input
+                data-remove-item="true"
+                type="checkbox"
+                class="cursor-pointer h-5 w-5 border-gray-400 bg-white text-apple-blue">
+            </div>
           </div>
         <% }); %>
+
         <% if (!(itens.filhos[filho.nome] && itens.filhos[filho.nome].length)) { %>
           <div class="text-gray-400 text-sm px-3 py-2">Nenhum item cadastrado.</div>
         <% } %>
@@ -129,3 +221,4 @@
         import load_events from "/scripts/form.js";
         load_events();
 </script>
+

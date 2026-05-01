@@ -18,6 +18,13 @@ const search = async (req, res) => {
             order by p.id`
             argumentos = [req.body.busca]
             break;
+        case 'exercicio':
+            query = `select e.id as value, e.name as label from exercise e
+            WHERE e.name COLLATE utf8mb4_0900_ai_ci LIKE CONCAT('%', ?, '%') and deleted_at is null
+            order by e.id
+            `
+            argumentos = [req.body.busca]
+            break;
         default:
             break;
     }
@@ -109,5 +116,6 @@ treino_router.get("/", index);
 treino_router.post("/search", search);
 treino_router.get("/exercicio", exercicio);
 treino_router.get("/treino_exercicio", treino_exercicio);
+treino_router.post("/treino_exercicio/search", search);
 treino_router.get("/:id", treino_form);
 export default treino_router;
