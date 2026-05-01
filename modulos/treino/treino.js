@@ -19,8 +19,8 @@ const search = async (req, res) => {
             argumentos = [req.body.busca]
             break;
         case 'exercicio':
-            query = `select e.id as value, e.name as label from exercise e
-            WHERE e.name COLLATE utf8mb4_0900_ai_ci LIKE CONCAT('%', ?, '%') and deleted_at is null
+            query = `select e.id as value, e.name as label from search_exercise e
+            WHERE e.descr_like COLLATE utf8mb4_0900_ai_ci LIKE CONCAT('%', ?, '%')
             order by e.id
             `
             argumentos = [req.body.busca]
