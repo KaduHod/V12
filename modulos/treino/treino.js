@@ -3,6 +3,7 @@ import { EntidadesGym } from "../../entidades.js";
 import pool from "../../database/conn.js";
 import { gerar_filtro_sql_entidade, montar_paginacao, montar_query_total } from "../../filtro.js";
 import { ITENS_POR_PAGINA } from "../../config.js";
+import { carregar_entidades } from "../../carregar_antidades.js";
 const treino_router = e.Router();
 
 /** @type {import('express').RequestHandler} */
@@ -90,16 +91,15 @@ const treino_exercicio = async (req, res) => {
 const treino_form = async (req, res) => {
     const id = req.params.id
     const entidade = EntidadesGym.treino;
-    let query = `SELECT t.*, p.id as pessoa_id, p.nome as pessoa
-                    FROM treino t
-                left join pessoa p on p.id = t.pessoa_id and p.deleted_at is null
-                where t.deleted_at is null and t.id = ?
-    `;
-    const [item] = await pool.promise().query(query, [id])
+    const itens = await carregar_entidades(pool, entidade, id);
+    if(!itens) {
+        res.status(400);
+        return;
+    }
     res.render('motor/form/form_entidade', {
         layout: false,
         entidade,
-        item: item[0],
+        itens,
         entidades: EntidadesGym
     });
 

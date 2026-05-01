@@ -11,7 +11,7 @@
  * @property {string} [label=null]
  * @property {boolean} [pk=false]
  * @property {boolean} [hidden=false]
- * @property {boolean} [search=false]
+ * @property {boolean|string} [search=false] // todo search deve ser fk
  * @property {string} [fk]
  * @property {string} [fk_tabela]
  * @property {boolean} [filtro=false]
@@ -63,7 +63,7 @@ const exercicio_treino = {
     tipo: "lista",
     filhos: [exercicio],
     colunas: [
-        DEFAULT_ID,
+        {...DEFAULT_ID, hidden:true},
         {
             nome: "treino",
             tipo: "number",
@@ -74,6 +74,7 @@ const exercicio_treino = {
             nome: "exercicio",
             tipo: "number",
             fk: "exercise",
+            search: "name",
         },
         {
             nome: "series",
@@ -113,7 +114,7 @@ const treino = {
             nome: "pessoa",
             label: "Pessoa",
             tipo: "number",
-            search: true,
+            search: "nome",
             fk: "pessoa",
             filtro: true
         }

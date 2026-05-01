@@ -1,6 +1,6 @@
 <%
   const colunasVisiveis = entidade.colunas.filter(c => !c.hidden);
-  const acao = item.id ? 'editar' : 'criar';
+  const acao = itens[entidade.nome].id ? 'editar' : 'criar';
 %>
 <h1 class="text-xl font-bold mb-4">
   <%= acao === 'editar' ? 'Editar ' + entidade.nome : 'Novo ' + entidade.nome %>
@@ -9,18 +9,18 @@
 <form
   name="form-principal"
   id="form-<%= entidade.nome %>"
-  hx-post="<%= entidade.http_path_name %><%= acao === 'editar' ? '/' + item.id : '' %>"
+  hx-post="<%= entidade.http_path_name %><%= acao === 'editar' ? '/' + itens[entidade.nome].id : '' %>"
   hx-target="main"
   hx-swap="innerHTML"
 >
   <%# Campos hidden (colunas ocultas) %>
   <% entidade.colunas.filter(c => c.hidden).forEach(coluna => { %>
-    <input type="hidden" name="<%= coluna.nome %>" value="<%= item[coluna.nome] || '' %>">
+    <input type="hidden" name="<%= coluna.nome %>" value="<%= itens[entidade.nome][coluna.nome] || '' %>">
   <% }); %>
 
   <%# Campos visíveis %>
   <% colunasVisiveis.forEach(coluna => {
-    const value = item[coluna.nome] ?? '';
+    const value = itens[entidade.nome][coluna.nome] ?? '';
     const isPk = coluna.pk;
     const inputType = coluna.tipo === 'number' ? 'number' : coluna.tipo === 'boolean' ? 'checkbox' : 'text';
   %>
@@ -59,7 +59,7 @@
             data-search-input
           />
           <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
-          <input type="hidden" name="<%= coluna.nome %>_id" value="<%= item[coluna.nome + '_id'] || '' %>" data-search-hidden>
+          <input type="hidden" name="<%= coluna.nome %>_id" value="<%= itens[entidade.nome][coluna.nome + '_id'] || '' %>" data-search-hidden>
         </div>
       <% } else { %>
         <input
@@ -90,7 +90,7 @@
         <div class="px-2 py-1 text-sm font-medium whitespace-nowrap">Ações</div>
       </div>
       <div id="itens-filho-<%= filho.tabela %>">
-        <% (item[filho.tabela] || []).forEach((itemF, idxF) => { %>
+        <% (itens.filhos[filho.nome] || []).forEach((itemF, idxF) => { %>
           <div data-item="true"
             class="border border-gray-300 rounded-lg p-4 mb-3 bg-white shadow-sm md:rounded-none md:p-0 md:mb-0 md:shadow-none md:border-0 md:border-b md:grid md:items-center md:gap-2 md:px-2"
             style="grid-template-columns: <%= filho.colunas.filter(c => !c.hidden).map(c => (c.pk || c.tipo === 'boolean') ? 'min-content' : 'minmax(min-content, 1fr)').join(' ') + ' min-content' %>">
@@ -106,7 +106,7 @@
             <div><!-- ações placeholder --></div>
           </div>
         <% }); %>
-        <% if (!(item[filho.tabela] && item[filho.tabela].length)) { %>
+        <% if (!(itens.filhos[filho.nome] && itens.filhos[filho.nome].length)) { %>
           <div class="text-gray-400 text-sm px-3 py-2">Nenhum item cadastrado.</div>
         <% } %>
       </div>
