@@ -58,7 +58,6 @@ const exercicio = {
 const exercicio_treino = {
     nome: "Exercicio Treino",
     http_path_name: "treino/treino_exercicio",
-    modulo: "treino",
     tabela: "treino_exercise",
     tipo: "lista",
     filhos: [exercicio],
