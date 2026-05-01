@@ -82,7 +82,7 @@ try {
     console.error(error)
 }
 
-process.on('SIGINT', async () => {
-    await mysql.end();
+process.on('SIGINT', () => {
+    pool.end();
     process.exit(0);
 });
