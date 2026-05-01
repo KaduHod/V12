@@ -21,6 +21,7 @@ const search = async (req, res) => {
         case 'exercicio':
             query = `select e.id as value, e.name as label from search_exercise e
             WHERE e.descr_like COLLATE utf8mb4_0900_ai_ci LIKE CONCAT('%', ?, '%')
+            group by e.id, e.name
             order by e.id
             `
             argumentos = [req.body.busca]
