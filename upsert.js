@@ -12,23 +12,34 @@ export async function upsert_lista(entidade, body) {
     body.id.forEach((id, index) => {
         let argumentos_curr = [];
         if(body.pular_upsert[index] == 'S') return;
-        if(id[0] != '_' && body.excluir && body.excluir[index] == 'S') {
+        if(id[0] != '_' && body.excluir && body.excluir[index] == 'S') { // DELETE
             query = `update ${entidade.tabela} set deleted_at = now() where id = ?`;
             argumentos_curr = [id];
             querys[id] = query;
-        } else if(id && id[0] != "_") {
+        } else if(id && id[0] != "_") { // UPDATE
             let values = Object.keys(body)
-                .filter((coluna) => entidade.colunas.find(c => c.nome == coluna && !c.pk))
+                .filter( coluna => entidade.colunas.find(c => {
+                    return (
+                        (c.nome == coluna && !c.pk) // tratamento para colunas da entidade
+                        || (c.fk && coluna.endsWith('_id') && c.nome == coluna.replace('_id', '')) // tratamento para fk's
+                    )
+                }))
                 .map((coluna) => {
                     argumentos_curr.push(body[coluna][index]);
                     return `${coluna} = ?`
                 })
             argumentos_curr.push(id);
             let update = `update ${entidade.tabela} set ` + values.join(", ") + ` where id = ?`;
+            console.log(update, argumentos_curr)
             querys[id] = update;
-        } else if(body.excluir[index] != 'S') {
+        } else if(body.excluir[index] != 'S') { // INSERT
             let colunas = Object.keys(body)
-                .filter((coluna) => entidade.colunas.find(c => c.nome == coluna && !c.pk))
+                .filter((coluna) => entidade.colunas.find(c => {
+                    return (
+                            (c.nome == coluna && !c.pk)
+                            || (c.fk && coluna.endsWith('_id') && c.nome == coluna.replace('_id', ''))
+                        )
+                }))
                 .map((coluna) => {
                     argumentos_curr.push(body[coluna][index]);
                     return coluna;
