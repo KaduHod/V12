@@ -14,53 +14,38 @@ export function build_upsert_querys(entidade, body, parent_id = null) {
     let argumentos = {};
     body.id.forEach((id, index) => {
         let argumentos_curr = [];
+        let colunas = [];
         if (body.pular_upsert && body.pular_upsert[index] === 'S') return;
-
         if (id && id[0] !== '_' && body.excluir && body.excluir[index] === 'S') {
             // DELETE
             querys[id] = `update ${entidade.tabela} set deleted_at = now() where id = ?`;
             argumentos_curr = [id];
         } else if (id && id[0] !== '_') {
-            // UPDATE
-            let values = Object.keys(body)
-                .filter(coluna => entidade.colunas.find(c => {
-                    return (
-                        (c.nome === coluna && !c.pk) ||
-                        (c.fk && coluna.endsWith('_id') && c.nome === coluna.replace('_id', '')) ||
-                        (c.fk && c.parent)
-                    );
-                }))
-                .map(coluna => {
-                    const coluna_entidade = entidade.colunas.find(c => c.nome == coluna);
-                    if(coluna_entidade.parent && parent_id) {
-                        argumentos_curr.push(parent_id);
-                        return `${coluna}_id = ?`;
-                    } else {
-                        argumentos_curr.push(body[coluna][index]);
-                        return `${coluna} = ?`;
-                    }
-                });
+            for (let [prop, valor] of Object.entries(body)) {
+                const coluna_entidade = entidade.colunas.find(c => (c.nome == prop) || (c.fk && prop.endsWith('_id') && prop.replace('_id', '') == c.nome));
+                if(!coluna_entidade || coluna_entidade.pk) continue;
+                if(coluna_entidade.fk) {
+                    argumentos_curr.push(coluna_entidade.parent ? parent_id : valor[index]);
+                    colunas.push(coluna_entidade.nome + '_id = ?');
+                } else {
+                    argumentos_curr.push(valor[index]);
+                    colunas.push(coluna_entidade.nome + ' = ?');
+                }
+            }
             argumentos_curr.push(id);
-            querys[id] = `update ${entidade.tabela} set ${values.join(", ")} where id = ?`;
+            querys[id] = `update ${entidade.tabela} set ${colunas.join(", ")} where id = ?`;
         } else if (!body.excluir || body.excluir[index] !== 'S') {
-            // INSERT
-            let colunas = Object.keys(body)
-                .filter(coluna => entidade.colunas.find(c => {
-                    return (
-                        (c.nome === coluna && !c.pk) ||
-                        (c.fk && coluna.endsWith('_id') && c.nome === coluna.replace('_id', ''))
-                    );
-                }))
-                .map(coluna => {
-                    const coluna_entidade = entidade.colunas.find(c => c.nome == coluna);
-                    if(coluna_entidade && coluna_entidade.parent && parent_id) {
-                        argumentos_curr.push(parent_id);
-                        return coluna+"_id";
-                    } else {
-                        argumentos_curr.push(body[coluna][index]);
-                        return coluna;
-                    }
-                });
+            for (let [prop, valor] of Object.entries(body)) {
+                const coluna_entidade = entidade.colunas.find(c => (c.nome == prop) || (c.fk && prop.endsWith('_id') && prop.replace('_id', '') == c.nome));
+                if(!coluna_entidade || coluna_entidade.pk) continue;
+                if(coluna_entidade.fk) {
+                    argumentos_curr.push(coluna_entidade.parent ? parent_id : valor[index]);
+                    colunas.push(coluna_entidade.nome + '_id');
+                } else {
+                    argumentos_curr.push(valor[index]);
+                    colunas.push(coluna_entidade.nome);
+                }
+            }
             const placeholders = colunas.map(() => '?').join(', ');
             querys[id] = `insert into ${entidade.tabela} (${colunas.join(", ")}) values (${placeholders})`;
         }
