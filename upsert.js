@@ -107,10 +107,10 @@ export async function upsert_entidade(entidade, body) {
     querys[0] = `update ${entidade.tabela} set ${colunas_query_entidade_pai.join(", ")} where id = ?`;
     argumentos[0].push(body.id);
     if(body.filhos) {
-        Object.keys(body.filhos).forEach((filho) => {
+        Object.keys(body.filhos).forEach((filho, i) => {
             const entidade_filho = entidade.filhos.find(entidade_filho => entidade_filho.tabela == filho);
             if(!entidade_filho) return;
-            let config_filhos = build_upsert_querys(entidade_filho, body.filhos[filho].pop(), body.id);
+            let config_filhos = build_upsert_querys(entidade_filho, body.filhos[filho][i], body.id);
             querys = {...querys, ...config_filhos.querys};
             argumentos = {...argumentos, ...config_filhos.argumentos};
         })

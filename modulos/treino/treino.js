@@ -126,6 +126,7 @@ const treino_lista_upsert = async (req, res) => {
 const treino_upsert = async (req, res) => {
     const entidade = EntidadesGym.treino;
     await upsert_entidade(entidade, req.body)
+    await treino_form(req, res)
 }
 
 treino_router.get("/", index);
