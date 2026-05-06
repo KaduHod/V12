@@ -28,11 +28,14 @@
 
             <% if (coluna.pk) { %>
               <%# PK: clicável, redireciona %>
-              <div hx-get="<%= entidade.http_path_name + '/' + item[coluna.nome] %>"
+              <div
+                <% if (entidade.possui_form) {%>
+                   hx-get="<%= entidade.http_path_name + '/' + item[coluna.nome] %>"
                    hx-target="main"
                    hx-swap="innerHTML"
+                <% } %>
                    data-link
-                   class="flex items-center h-[44px] p-2 rounded cursor-pointer">
+                   class="flex items-center h-[44px] p-2 rounded <%= entidade.possui_form ? 'cursor-pointer' : '' %>">
                 <span class="text-sm" data-item-pk="true"><%= item[coluna.nome] || '' %></span>
               </div>
 

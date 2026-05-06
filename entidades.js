@@ -24,6 +24,7 @@
  * @property {string} nome
  * @property {string} http_path_name
  * @property {string} tabela
+ * @property {boolean} [possui_form]
  * @property {Entidade[]} [filhos]
  * @property {TipoEntidade} tipo
  * @property {Coluna[]} colunas
@@ -100,6 +101,7 @@ const exercicio_treino = {
 const treino = {
     nome: "Treino",
     tabela: "treino",
+    possui_form: true,
     http_path_name: "treino",
     tipo: "lista",
     modulo: "treino",
