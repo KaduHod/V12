@@ -43,6 +43,7 @@ const DEFAULT_ID = {
 const exercicio = {
     nome: "Exercício",
     modulo: "treino",
+    possui_form: true,
     http_path_name: "treino/exercicio",
     tabela: "exercise",
     tipo: "lista",
