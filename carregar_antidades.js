@@ -61,6 +61,7 @@ export async function carregar_entidades(pool, entidade_pai, id) {
         .then(([rows]) => (itens[entidade_pai.nome] = rows[0])),
     ];
 
+      if(entidade_pai.filhos  && entidade_pai.filhos.length > 0) {
     entidade_pai.filhos.forEach((filho) => {
       let query_filho = montar_query_entidade(filho).replace(
         "WHERE 1=1",
@@ -73,6 +74,7 @@ export async function carregar_entidades(pool, entidade_pai, id) {
           .then(([rows]) => (itens.filhos[filho.nome] = rows)),
       );
     });
+      }
     await Promise.all(promises);
     return itens;
   } catch (error) {
