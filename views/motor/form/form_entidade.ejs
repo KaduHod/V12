@@ -235,7 +235,9 @@
     <% if (entidade.filhos && entidade.filhos.length) { %>
       <% entidade.filhos.forEach(filho => { if (filho.tipo === 'link') { %>
         <a
-          href="/<%= filho.entidade.http_path_name %>/<%= itens[entidade.nome].id || '' %>"
+          hx-get="/<%= filho.entidade.http_path_name %>/<%= itens[entidade.nome].id || '' %>"
+          hx-swap="innerHTML"
+          hx-target="main"
           class="inline-block bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 min-h-[44px] text-center"
         >
           Ver <%= filho.entidade.nome %>

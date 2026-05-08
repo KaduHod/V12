@@ -144,6 +144,25 @@ const treino_upsert = async (req, res) => {
     await upsert_entidade(entidade, req.body)
     await treino_form(req, res)
 }
+/** @type {import('express').RequestHandler} */
+const treinado_form = async (req, res) => {
+    const id = req.params.id
+    const entidade = {...EntidadesGym.treino};
+    entidade.filhos = [
+        { tipo: "lista", entidade: EntidadesGym.treinado }
+    ]
+    const itens = await carregar_entidades(pool, entidade, id);
+    if(!itens) {
+        res.status(400);
+        return;
+    }
+    res.render('motor/form/form_entidade', {
+        layout: false,
+        entidade,
+        itens,
+        entidades: EntidadesGym
+    });
+}
 
 treino_router.get("/", index);
 treino_router.post("/search", search);
@@ -151,6 +170,7 @@ treino_router.get("/exercicio", exercicio);
 treino_router.get("/exercicio/:id", exercicio_form);
 treino_router.get("/treino_exercicio", treino_exercicio);
 treino_router.post("/treino_exercicio/search", search);
+treino_router.get("/treinado/:id", treinado_form);
 treino_router.get("/:id", treino_form);
 treino_router.post("/", treino_lista_upsert);
 treino_router.post("/:id", treino_upsert);

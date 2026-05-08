@@ -1,9 +1,10 @@
 // @ts-check
 /**
  * @typedef {"string" | "number" | "boolean" | "label" } TipoColuna
- * @typedef {"unico" | "lista" } TipoEntidade
+ * @typedef {"unico" | "lista" | "lista_pai"} TipoEntidade
  * @typedef {"lista" | "link" } TipoFilho
- * @typedef {"treino" | "exercicio" | "pessoa" | "exercicio_treino"} TiposEntidadesGym
+ * @typedef {"padrao" } TipoPai
+ * @typedef {"treino" | "exercicio" | "pessoa" | "exercicio_treino" | "treinado"} TiposEntidadesGym
  */
 /**
  * @typedef {Object} Coluna
@@ -14,6 +15,7 @@
  * @property {boolean} [hidden=false]
  * @property {boolean|string} [search=false] // todo search deve ser fk
  * @property {string} [fk]
+ * @property {Entidade} [entidade_indireta]
  * @property {boolean} [parent]
  * @property {string} [fk_tabela]
  * @property {boolean} [filtro=false]
@@ -22,7 +24,14 @@
 /**
  * @typedef {Object} FilhoConfig
  * @property {Entidade} entidade
- * @property {string} [tipo="lista"]
+ * @property {TipoFilho} [tipo]
+**/
+
+/**
+ * @typedef {Object} PaiConfig
+ * @property {Entidade} entidade
+ * @property {Entidade} [entidade_indireta]
+ * @property {TipoPai} [tipo]
 **/
 
 /**
@@ -32,6 +41,7 @@
  * @property {string} http_path_name
  * @property {string} tabela
  * @property {FilhoConfig[]} [filhos]
+ * @property {PaiConfig} [pai]
  * @property {TipoEntidade} tipo
  * @property {Coluna[]} colunas
  * @property {boolean} [possui_form]
@@ -63,7 +73,13 @@ const exercicio = {
         }
     ]
 }
-
+/** @type {Entidade} */
+let exercicio_treino = {
+    nome: "Exercicio Treino",
+    http_path_name: "treino/treino_exercicio",
+    tabela: "treino_exercise",
+    tipo: "lista"
+}
 
 /** @type {Entidade} */
 const treinado = {
@@ -71,7 +87,6 @@ const treinado = {
     http_path_name: "treino/treinado",
     tabela: "treinado",
     tipo: "lista",
-    filhos: [],
     colunas: [
         {...DEFAULT_ID, hidden:true},
         {
@@ -80,6 +95,7 @@ const treinado = {
             tipo: "label",
             fk: "exercise",
             search: "name",
+            entidade_indireta: exercicio_treino
         },
         {
             nome: "peso",
@@ -99,11 +115,8 @@ const treinado = {
     ]
 }
 /** @type {Entidade} */
-const exercicio_treino = {
-    nome: "Exercicio Treino",
-    http_path_name: "treino/treino_exercicio",
-    tabela: "treino_exercise",
-    tipo: "lista",
+exercicio_treino = {
+    ...exercicio_treino,
     filhos: [
         {
             tipo: "lista",
@@ -212,10 +225,15 @@ treinado.filhos = [
         entidade: treino
     }
 ]
+treinado.pai = {
+    tipo: "padrao",
+    entidade: treino,
+    entidade_indireta: exercicio_treino,
+}
 
 /**
     @type {Partial<Record<TiposEntidadesGym, Entidade>>}
 */
 export const EntidadesGym = {
-    exercicio_treino, pessoa, treino, exercicio
+    exercicio_treino, pessoa, treino, exercicio, treinado
 }
