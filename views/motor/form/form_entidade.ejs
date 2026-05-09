@@ -92,8 +92,8 @@
 
   <%# Lista de itens dos filhos (tipo lista) %>
   <% if (entidade.filhos && entidade.filhos.length) { %>
-  <% entidade.filhos.filter(filho => filho.tipo == 'lista').forEach(filho => { %>
-      <h2 class="text-lg font-bold mt-8 mb-1"><%= filho.entidade.nome %></h2>
+  <% entidade.filhos.filter(filho => filho.tipo == 'lista' && filho.renderizar).forEach(filho => { %>
+      <h2 class="text-lg font-bold mt-8 mb-1"><%= filho.entidade.label %></h2>
 
       <%
         // Grid columns para o filho (mesmo esquema de itens_container)
@@ -222,7 +222,6 @@
       </div>
     <% }); %>
   <% } %>
-
   <%# Botões %>
   <div class="mt-6 flex flex-col sm:flex-row gap-3">
     <button
@@ -233,14 +232,14 @@
     </button>
     <%# Links para entidades filhas do tipo link %>
     <% if (entidade.filhos && entidade.filhos.length) { %>
-      <% entidade.filhos.forEach(filho => { if (filho.tipo === 'link') { %>
+      <% entidade.filhos.forEach(filho => { if (!filho.renderizar && filho.link != false) { %>
         <a
-          hx-get="/<%= filho.entidade.http_path_name %>/<%= itens[entidade.nome].id || '' %>"
+          hx-get="/<%= entidade.http_path_name %>/<%= itens[entidade.nome].id || '' %>?renderizar=<%= filho.entidade.nome %>"
           hx-swap="innerHTML"
           hx-target="main"
           class="inline-block bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 min-h-[44px] text-center"
         >
-          Ver <%= filho.entidade.nome %>
+          Ver <%= filho.entidade.label %>
         </a>
       <% } }); %>
     <% } %>

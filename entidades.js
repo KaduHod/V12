@@ -24,6 +24,8 @@
 /**
  * @typedef {Object} FilhoConfig
  * @property {Entidade} entidade
+ * @property {boolean} [renderizar]
+ * @property {boolean} [link]
  * @property {TipoFilho} [tipo]
 **/
 
@@ -40,6 +42,7 @@
  * @property {string} nome
  * @property {string} http_path_name
  * @property {string} tabela
+ * @property {string} [label]
  * @property {FilhoConfig[]} [filhos]
  * @property {PaiConfig} [pai]
  * @property {TipoEntidade} tipo
@@ -78,12 +81,14 @@ let exercicio_treino = {
     nome: "Exercicio Treino",
     http_path_name: "treino/treino_exercicio",
     tabela: "treino_exercise",
-    tipo: "lista"
+    tipo: "lista",
+    label: "Exercícios",
 }
 
 /** @type {Entidade} */
 const treinado = {
     nome: "Treinado",
+    label: "Execuções",
     http_path_name: "treino/treinado",
     tabela: "treinado",
     tipo: "lista",
@@ -172,11 +177,13 @@ const treino = {
     filhos: [
         {
             tipo: "lista",
-            entidade: exercicio_treino
+            entidade: exercicio_treino,
+            renderizar: true
         },
         {
-            tipo: "link",
-            entidade: treinado
+            tipo: "lista",
+            entidade: treinado,
+            link: true
         }
     ],
     colunas: [
