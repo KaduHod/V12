@@ -243,4 +243,5 @@ treinado.pai = {
 */
 export const EntidadesGym = {
     exercicio_treino, pessoa, treino, exercicio, treinado
-}
+};
+export const importa_entidades_gym = () => structuredClone(EntidadesGym)

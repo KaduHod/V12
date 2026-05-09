@@ -1,5 +1,5 @@
 import e from "express";
-import { EntidadesGym } from "../../entidades.js";
+import { importa_entidades_gym } from "../../entidades.js";
 import pool from "../../database/conn.js";
 import { gerar_filtro_sql_entidade, montar_paginacao, montar_query_total } from "../../filtro.js";
 import { ITENS_POR_PAGINA } from "../../config.js";
@@ -38,7 +38,7 @@ const search = async (req, res) => {
 }
 /** @type {import('express').RequestHandler} */
 const index = async (req, res) => {
-    const entidade = EntidadesGym.treino;
+    const entidade = importa_entidades_gym().treino;
     let pagina = req.query.pagina ?? 1;
     pagina = parseInt(pagina);
     let query = `SELECT t.*, p.id as pessoa_id, p.nome as pessoa
@@ -70,36 +70,36 @@ const index = async (req, res) => {
         entidade,
         itens,
         itens_por_pagina: ITENS_POR_PAGINA,
-        entidades: EntidadesGym
+        entidades: importa_entidades_gym()
     });
 }
 /** @type {import('express').RequestHandler} */
 const exercicio = async (req, res) => {
-    const entidade = EntidadesGym.exercicio;
+    const entidade = importa_entidades_gym().exercicio;
     const [ itens ] = await pool.promise().query(`SELECT * FROM exercise`)
     res.render('motor/form/form', {
         layout: false,
         entidade,
         itens,
-        entidades: EntidadesGym
+        entidades: importa_entidades_gym()
     });
 }
 
 /** @type {import('express').RequestHandler} */
 const treino_exercicio = async (req, res) => {
-    const entidade = EntidadesGym.exercicio_treino;
+    const entidade = importa_entidades_gym().exercicio_treino;
     const [ itens ] = await pool.promise().query(`SELECT * FROM treino_exercise`)
     res.render('motor/form/form', {
         layout: false,
         entidade,
         itens,
-        entidades: EntidadesGym
+        entidades: importa_entidades_gym()
     });
 }
 /** @type {import('express').RequestHandler} */
 const treino_form = async (req, res) => {
     const id = req.params.id
-    const entidade = EntidadesGym.treino;
+    const entidade = importa_entidades_gym().treino;
     if(req.query.renderizar) {
         entidade.filhos.forEach((f, i) => {
             entidade.filhos[i].renderizar = req.query.renderizar == f.entidade.nome;
@@ -114,14 +114,14 @@ const treino_form = async (req, res) => {
         layout: false,
         entidade,
         itens,
-        entidades: EntidadesGym
+        entidades: importa_entidades_gym()
     });
 
 }
 /** @type {import('express').RequestHandler} */
 const exercicio_form = async (req, res) => {
     const id = req.params.id
-    const entidade = EntidadesGym.exercicio;
+    const entidade = importa_entidades_gym().exercicio;
     const itens = await carregar_entidades(pool, entidade, id);
     if(!itens) {
         res.status(400);
@@ -131,21 +131,21 @@ const exercicio_form = async (req, res) => {
         layout: false,
         entidade,
         itens,
-        entidades: EntidadesGym
+        entidades: importa_entidades_gym()
     });
 
 }
 
 /** @type {import('express').RequestHandler} */
 const treino_lista_upsert = async (req, res) => {
-    const entidade = EntidadesGym.treino;
-    await upsert_lista(entidade, req.body, EntidadesGym);
+    const entidade = importa_entidades_gym().treino;
+    await upsert_lista(entidade, req.body);
     return index(req, res);
 }
 
 /** @type {import('express').RequestHandler} */
 const treino_upsert = async (req, res) => {
-    const entidade = EntidadesGym.treino;
+    const entidade = importa_entidades_gym().treino;
     await upsert_entidade(entidade, req.body)
     await treino_form(req, res)
 }
