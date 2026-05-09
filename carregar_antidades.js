@@ -15,6 +15,10 @@ export function montar_query_entidade(entidade) {
                     coluna = `${nome_tabela}.id as ${col.nome}_id`;
                 }
                 if(col.entidade_indireta) {
+                    if(col.tipo == 'label' && col.fk) {
+                        coluna = `${col.fk}.${col.fk_coluna_descr} as ${col.nome}`;
+                        acc.colunas_de_joins.push(coluna);
+                    }
                     const entidade_indireta = col.entidade_indireta;
                     acc.joins.push(`join ${entidade_indireta.tabela} on ${entidade_indireta.tabela}.id = ${entidade.tabela}.${entidade_indireta.tabela}_id and ${entidade_indireta.tabela}.deleted_at is null`)
                     acc.joins.push(`join ${nome_tabela} on ${nome_tabela}.id = ${entidade_indireta.tabela}.${nome_tabela}_id and ${nome_tabela}.deleted_at is null`)
@@ -40,7 +44,13 @@ export function montar_query_entidade(entidade) {
     }
     const campos_entidade = entidade.colunas
         .filter((c) => !c.fk)
-        .map((c) => `${entidade.tabela}.${c.nome} as ${c.nome}`);
+        .map((c) => {
+            let coluna_sql = `${entidade.tabela}.${c.nome} as ${c.nome}`;
+            if(c.tipo == 'data') {
+                coluna_sql = coluna_sql.replace(/(.*?)\s+as\s+(.*)/i, "date_format($1, '%d/%m/%Y') as $2");
+            }
+            return coluna_sql;
+        });
     const cols = [...campos_entidade, ...colunas_de_joins].join(', ');
     const sql = `
     SELECT ${cols}

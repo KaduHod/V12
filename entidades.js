@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * @typedef {"string" | "number" | "boolean" | "label" } TipoColuna
+ * @typedef {"string" | "number" | "boolean" | "label" | "data"} TipoColuna
  * @typedef {"unico" | "lista" | "lista_pai"} TipoEntidade
  * @typedef {"lista" | "link" } TipoFilho
  * @typedef {"padrao" } TipoPai
@@ -15,6 +15,7 @@
  * @property {boolean} [hidden=false]
  * @property {boolean|string} [search=false] // todo search deve ser fk
  * @property {string} [fk]
+ * @property {string} [fk_coluna_descr]
  * @property {Entidade} [entidade_indireta]
  * @property {boolean} [parent]
  * @property {string} [fk_tabela]
@@ -99,7 +100,7 @@ const treinado = {
             label: "Exercicio",
             tipo: "label",
             fk: "exercise",
-            search: "name",
+            fk_coluna_descr: "name",
             entidade_indireta: exercicio_treino
         },
         {
@@ -116,6 +117,11 @@ const treinado = {
             nome: "repeticoes",
             label: "Repetições",
             tipo: "string",
+        },
+        {
+            nome: "data",
+            label: "Data",
+            tipo: "data",
         }
     ]
 }

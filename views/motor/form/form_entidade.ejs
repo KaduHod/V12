@@ -45,7 +45,14 @@
           <span class="text-sm text-gray-700"><%= value || '—' %></span>
         </div>
         <input type="hidden" name="<%= coluna.nome %>" value="<%= value %>" />
-
+      <% } else if (coluna.tipo === 'data') { %>
+        <input
+          type="date"
+          id="<%= coluna.nome %>"
+          name="<%= coluna.nome %>"
+          value="<%= value %>"
+          class="w-full border border-gray-300 rounded px-3 py-2 min-h-[44px]"
+        />
       <% } else if (coluna.search) { %>
         <div class="relative" data-search-field>
           <input
@@ -185,6 +192,14 @@
                     <input data-valor-inicial="<%= itemF[colunaF.nome + '_id'] || '' %>" type="hidden" name="filhos[<%= filho.entidade.tabela %>][<%= idxF %>][<%= colunaF.nome %>_id][]" value="<%= itemF[colunaF.nome + '_id'] || '' %>" data-search-hidden>
                   </div>
 
+                <% } else if (colunaF.tipo == 'data') { %>
+                  <input
+                    type="date"
+                    class="w-full p-2 border rounded min-h-[44px] text-sm"
+                    name="filhos[<%= filho.entidade.tabela %>][<%= idxF %>][<%= colunaF.nome %>][]"
+                    value="<%= itemF[colunaF.nome].split('/').reverse().join('-') || '' %>"
+                    data-valor-inicial="<%= itemF[colunaF.nome].split('/').reverse().join('-') || '' %>"
+                  />
                 <% } else if (colunaF.pk) { %>
                   <div class="flex items-center h-[44px] px-2 rounded border border-gray-200 bg-gray-50 cursor-default">
                     <span class="text-sm"><%= itemF[colunaF.nome] || '' %></span>
