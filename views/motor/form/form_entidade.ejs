@@ -119,7 +119,21 @@
                     >
                     + Adicionar
             </button>
+            <%# Links para entidades filhas do tipo link %>
+            <% if (entidade.filhos && entidade.filhos.length) { %>
+              <% entidade.filhos.forEach(filho => { if (!filho.renderizar && filho.link != false) { %>
+                <a
+                  hx-get="/<%= entidade.http_path_name %>/<%= itens[entidade.nome].id || '' %>?renderizar=<%= filho.entidade.nome %>"
+                  hx-swap="innerHTML"
+                  hx-target="main"
+                  class="inline-block bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 min-h-[44px] text-center"
+                >
+                  Ver <%= filho.entidade.label %>
+                </a>
+              <% } }); %>
+            <% } %>
         </div>
+
 
       <div class="hidden md:grid items-center bg-gray-100 border border-gray-300 px-2 py-1 gap-2"
            style="grid-template-columns: <%= gridColsFilho %>">
