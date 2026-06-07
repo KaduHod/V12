@@ -49,6 +49,7 @@
  * @property {TipoEntidade} tipo
  * @property {Coluna[]} colunas
  * @property {boolean} [possui_form]
+ * @property {string} [order]
  */
 
 
@@ -93,6 +94,7 @@ const treinado = {
     http_path_name: "treino/treinado",
     tabela: "treinado",
     tipo: "lista",
+    order: "data desc",
     colunas: [
         {...DEFAULT_ID, hidden:true},
         {

@@ -52,12 +52,16 @@ export function montar_query_entidade(entidade) {
             return coluna_sql;
         });
     const cols = [...campos_entidade, ...colunas_de_joins].join(', ');
-    const sql = `
+    let sql = `
     SELECT ${cols}
     FROM ${entidade.tabela}
     ${joins.join("\n ")}
     WHERE 1=1 and ${entidade.tabela}.deleted_at is null
     `;
+    if(entidade.order) {
+        sql += ` ORDER BY ${entidade.tabela}.${entidade.order}`;
+    }
+    // console.log(entidade)
     return sql;
 }
 
