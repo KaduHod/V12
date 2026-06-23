@@ -100,7 +100,8 @@ const treinado = {
         {
             nome: "exercise",
             label: "Exercicio",
-            tipo: "label",
+            tipo: "string",
+            search: "name",
             fk: "exercise",
             fk_coluna_descr: "name",
             entidade_indireta: exercicio_treino

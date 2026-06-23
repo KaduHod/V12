@@ -1,7 +1,6 @@
 /**
 * @param {import('./entidades.js').Entidade} entidade - entidade
 */
-
 export function montar_query_entidade(entidade) {
     let { joins, colunas_de_joins } = entidade.colunas
         .filter((c) => c.fk)
@@ -25,9 +24,9 @@ export function montar_query_entidade(entidade) {
                 } else {
                     const fk_pai = `${col.fk ?? col.nome}_id`;
                     const join = `left join ${nome_tabela} ${nome_tabela} on ${nome_tabela}.id = ${entidade.tabela}.${fk_pai} and ${nome_tabela}.deleted_at is null`;
-                    acc.colunas_de_joins.push(coluna);
                     acc.joins.push(join);
                 }
+                acc.colunas_de_joins.push(coluna);
                 return acc;
             },
             { joins: [], colunas_de_joins: [] },
@@ -61,7 +60,6 @@ export function montar_query_entidade(entidade) {
     if(entidade.order) {
         sql += ` ORDER BY ${entidade.tabela}.${entidade.order}`;
     }
-    // console.log(entidade)
     return sql;
 }
 
