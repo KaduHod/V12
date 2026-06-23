@@ -1,0 +1,28 @@
+<%
+  // prefix: opcional, ex: "filhos[tabela][0]" ou vazio
+  const searchId = coluna.search_server_id || coluna.nome;
+  const inputName = prefix ? `${prefix}[${coluna.nome}]` : coluna.nome;
+  const hiddenName = prefix ? `${prefix}[${coluna.nome}_id]` : coluna.nome + '_id';
+
+  // Se for filtro, não adiciona _id no hidden
+  if (isFilter) hiddenName = coluna.nome;
+%>
+<div class="relative" data-search-field>
+  <input
+    type="text"
+    hx-post="/<%= entidade.http_path_name %>/search?coluna=<%= searchId %>"
+    hx-trigger="keyup changed delay:500ms"
+    hx-target="next ul"
+    hx-params="busca"
+    hx-vals='js:{ "busca": document.activeElement.value }'
+    hx-swap="innerHTML"
+    placeholder="<%= placeholder || (isFilter ? (coluna.label || coluna.nome) : 'Digite para buscar...') %>"
+    class="<%= inputClass || 'w-full p-2 border border-gray-300 rounded-md text-sm' + (noMinHeight ? '' : ' min-h-[44px]') %>"
+    autocomplete="off"
+    value="<%= value || '' %>"
+    data-search-input
+    <% if (addId) { %>id="<%= coluna.nome %>"<% } %>
+  />
+  <ul class="hidden ..." data-search-dropdown></ul>
+  <input type="hidden" name="<%= hiddenName %>" value="<%= hiddenValue || '' %>" data-search-hidden <%= isFilter ? 'data-no-reset' : '' %> />
+</div>

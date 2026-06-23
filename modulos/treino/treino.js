@@ -27,6 +27,14 @@ const search = async (req, res) => {
             `
             argumentos = [req.body.busca]
             break;
+        case 'exercise_treino_search':
+            query = `select e.id as value, e.name as label from search_exercise e
+            WHERE e.descr_like COLLATE utf8mb4_0900_ai_ci LIKE CONCAT('%', ?, '%')
+            group by e.id, e.name
+            order by e.id
+            `
+            argumentos = [req.body.busca]
+            break;
         default:
             break;
     }
@@ -146,6 +154,7 @@ const treino_lista_upsert = async (req, res) => {
 /** @type {import('express').RequestHandler} */
 const treino_upsert = async (req, res) => {
     const entidade = importa_entidades_gym().treino;
+    console.log(entidade)
     await upsert_entidade(entidade, req.body)
     await treino_form(req, res)
 }

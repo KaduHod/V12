@@ -14,6 +14,7 @@
  * @property {boolean} [pk=false]
  * @property {boolean} [hidden=false]
  * @property {boolean|string} [search=false] // todo search deve ser fk
+ * @property {string} [search_server_id]
  * @property {string} [fk]
  * @property {string} [fk_coluna_descr]
  * @property {Entidade} [entidade_indireta]
@@ -102,6 +103,7 @@ const treinado = {
             label: "Exercicio",
             tipo: "string",
             search: "name",
+            search_server_id: "exercise_treino_search",
             fk: "exercise",
             fk_coluna_descr: "name",
             entidade_indireta: exercicio_treino

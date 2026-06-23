@@ -187,25 +187,18 @@
                   <input type="hidden" name="filhos[<%= filho.entidade.tabela %>][<%= idxF %>][<%= colunaF.nome %>][]" value="<%= itemF[colunaF.nome] || '' %>">
 
                 <% } else if (colunaF.search) { %>
-                  <div class="relative" data-search-field>
-                    <input
-                      type="text"
-                      hx-post="/<%= entidade.http_path_name %>/search?coluna=<%= colunaF.nome %>"
-                      hx-trigger="keyup changed delay:500ms"
-                      hx-target="next ul"
-                      hx-params="busca"
-                      hx-vals='js:{ "busca": document.activeElement.value }'
-                      hx-swap="innerHTML"
-                      placeholder="Digite para buscar..."
-                      class="w-full p-2 border border-gray-300 rounded-md text-sm min-h-[44px]"
-                      autocomplete="off"
-                      value="<%= itemF[colunaF.nome] %>"
-                      data-search-input
-                    >
-                    <ul class="hidden absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-sm mt-1 max-h-48 overflow-y-auto" data-search-dropdown></ul>
-                    <input data-valor-inicial="<%= itemF[colunaF.nome + '_id'] || '' %>" type="hidden" name="filhos[<%= filho.entidade.tabela %>][<%= idxF %>][<%= colunaF.nome %>_id][]" value="<%= itemF[colunaF.nome + '_id'] || '' %>" data-search-hidden>
-                  </div>
-
+                <%- include('_search_input', {
+                  entidade,
+                  coluna: colunaF,
+                  prefix: `filhos[${filho.entidade.tabela}][${idxF}]`,
+                  value: itemF[colunaF.nome],
+                  hiddenValue: itemF[colunaF.nome + '_id'],
+                  isFilter: false,
+                  placeholder: false,
+                  inputClass: false,
+                  noMinHeight: false,
+                  addId: false
+                }) %>
                 <% } else if (colunaF.tipo == 'data') { %>
                   <input
                     type="date"
