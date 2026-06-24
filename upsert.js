@@ -108,9 +108,9 @@ export async function upsert_entidade(entidade, body) {
     argumentos[0].push(body.id);
     if(body.filhos) {
         Object.keys(body.filhos).forEach((filho, i) => {
-            const entidade_filho = entidade.filhos.find(entidade_filho => entidade_filho.tabela == filho);
+            const entidade_filho = entidade.filhos.find(entidade_filho => entidade_filho.entidade.tabela == filho);
             if(!entidade_filho) return;
-            let config_filhos = build_upsert_querys(entidade_filho, body.filhos[filho][i], body.id);
+            let config_filhos = build_upsert_querys(entidade_filho.entidade, body.filhos[filho][i], body.id);
             querys = {...querys, ...config_filhos.querys};
             argumentos = {...argumentos, ...config_filhos.argumentos};
         })
